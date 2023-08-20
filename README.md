@@ -9,7 +9,7 @@ _Log Analysis_ is a Python application that works in conjunction with SQL to del
 3. On which dates did user actions result in an error rate of 1% or greater?
 
 ### What You Need
-_Log Analysis_ runs on a virtual Ubuntu box and utilizes the postgresql implementation of SQL. To get started please proceed as follows:
+_Log Analysis_ runs on a virtual Ubuntu box, and the database engine is postgresql. To get started please proceed as follows:
 
 * You will need a shell window. If you're on a Mac this is the command line utility. If on Windows 7 or later you will need to download [Git BASH](https://gitforwindows.org/).
 
