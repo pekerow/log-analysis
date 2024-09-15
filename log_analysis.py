@@ -14,33 +14,29 @@ query2 = """SELECT authors.name, count(*) as hits FROM articles
             GROUP BY authors.name ORDER BY hits DESC;"""
 
 question3 = "On which days did more than 1% of user queries result in errors?"
-query3 = """SELECT Date(time) as day, count(*) FILTER
-            (WHERE status LIKE '404%') * ROUND(100.0 / count(*), 7)
-            as error_rate FROM log GROUP BY day HAVING
-            (count(*) FILTER(WHERE status LIKE '404%') *
-            100 / count(*)) > 1;"""
+query3 = """SELECT Date(time) as day, 
+            count(*) FILTER (WHERE status LIKE '404%') * 100.0 / count(*) as error_rate
+            FROM log GROUP BY day HAVING
+            (count(*) FILTER(WHERE status LIKE '404%') * 100 / count(*)) > 1;"""
 
 
-def get_results(query):
-    db = psycopg2.connect(database="news")
-    cursor = db.cursor()
-    cursor.execute(query)
-    return cursor.fetchall()
-    db.close()
+def get_results(query: str) -> list:
+    with psycopg2.connect(database="news") as db:
+        with db.cursor() as cursor:
+            cursor.execute(query)
+            return cursor.fetchall()
 
 
-def print_results(outcome):
-    print("\n", outcome[1])
-    i = 1
-    for results in outcome[0]:
-        print("\t", i, "-", results[0], "--", str(results[1]), "hits")
-        i += 1
+def print_results(outcome: tuple):
+    print(f"\n{outcome[1]}")
+    for i, result in enumerate(outcome[0], 1):
+        print(f"\t{i} - {result[0]} -- {result[1]} hits")
 
 
-def print_errors(outcome):
-    print("\n", outcome[1])
-    for results in outcome[0]:
-        print("\t", results[0], "--", str(results[1]) + "% errors" + "\n")
+def print_errors(outcome: tuple):
+    print(f"\n{outcome[1]}")
+    for result in outcome[0]:
+        print(f"\t{result[0]} -- {result[1]}% errors\n")
 
 
 if __name__ == '__main__':
